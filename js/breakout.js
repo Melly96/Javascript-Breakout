@@ -16,8 +16,26 @@ var paddleX = (canvas.width-paddleWidth)/2;
 var rightPressed = false;
 var leftPressed = false;
 
-//Draw the ball
+//Setup some bricks
+var brickRowCount = 3;
+var brickColumnCount = 5;
+var brickWidth = 75;
+var brickHeight = 20;
+var brickPadding = 10;
+var brickOffsetTop = 30;
+var brickOffsetLeft = 30;
 
+//Hold the bricks in a two-dimensional array - think of it as rows and columns
+var bricks = [];
+for(c=0; c<brickColumnCount; c++) {
+	bricks[c] = [];
+	for(r=0; r<brickRowCount; r++) {
+	bricks[c][r] = { x: 0, y: 0, status: 1 };
+	}
+}
+
+
+//Draw the ball
 function drawBall() {
 	ctx.beginPath();
 	ctx.arc(x, y, ballRadius, 0, Math.PI*2);
