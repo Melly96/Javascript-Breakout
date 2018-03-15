@@ -30,23 +30,25 @@ var bricks = [];
 for(c=0; c<brickColumnCount; c++) {
 	bricks[c] = [];
 	for(r=0; r<brickRowCount; r++) {
-		bricks[c][r] = { x: 0, y: 0, };
+		bricks[c][r] = { x: 0, y: 0, status: 1 };
 	}
 }
 
 //This function draws the bricks
 function drawBricks() {
-	for(c=0; c<brickColumnCount; c++) {
-		for(r=0; r<brickRowCount; r++) {
-			var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
-			var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
-			bricks[c][r].x = brickX;
-			bricks[c][r].y = brickY;
-			ctx.beginPath();
-			ctx.rect(brickX, brickY, brickWidth, brickHeight);
-			ctx.fillStyle = "#D2691E";
-			ctx.fill();
-			ctx.closePath();
+    for(c=0; c<brickColumnCount; c++) {
+        for(r=0; r<brickRowCount; r++) {
+            if(bricks[c][r].status == 1) {
+                var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+                var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+                bricks[c][r].x = brickX;
+                bricks[c][r].y = brickY;
+                ctx.beginPath();
+                ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                ctx.fillStyle = "#0095DD";
+                ctx.fill();
+                ctx.closePath();
+			}
 		}
 	}
 }
@@ -70,13 +72,15 @@ function drawPaddle() {
 
 function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	//draw the bricks
-	drawBricks();
 	//draw the ball
 	drawBall();
 	//draw the paddle
 	drawPaddle();
-	collisionDetection();
+	//draw the bricks
+	drawBricks();
+	//collision detection
+	//collisionDetection();
+	
 	x += dx;
 	y += dy;
 	
@@ -96,17 +100,7 @@ function draw() {
 			document.location.reload();
 		}
 	}
-	
-	
-	
-	
-	//Making the Ball bounce
-	if(y + dy > canvas.height-ballRadius || y + dy < ballRadius) {
-		dy = -dy;
-	}
-	if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
-		dx = -dx;
-	}
+
 	//Move the paddle left and right
 	if(rightPressed) {
 		paddleX += 5;
@@ -114,7 +108,7 @@ function draw() {
 	else if(leftPressed) {
 		paddleX -= 5;
 	}
-}
+}//end of draw()
 
 document.addEventListener("keydown" , keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
@@ -142,8 +136,11 @@ function collisionDetection() {
     for(c=0; c<brickColumnCount; c++) {
         for(r=0; r<brickRowCount; r++) {
             var b = bricks[c][r];
-            if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
-                dy = -dy;
+            if(b.status == 1) {
+                if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+                    dy = -dy;
+                    b.status = 0;
+                }
             }
         }
     }
