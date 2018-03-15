@@ -79,7 +79,7 @@ function draw() {
 	//draw the bricks
 	drawBricks();
 	//collision detection
-	//collisionDetection();
+	collisionDetection();
 	
 	x += dx;
 	y += dy;
