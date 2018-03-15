@@ -11,7 +11,7 @@ var dy = -2;
 
 //Define a paddle to hit the ball
 var paddleHeight = 10;
-var paddleWidth = 75;
+var paddleWidth = 100;
 var paddleX = (canvas.width-paddleWidth)/2;
 var rightPressed = false;
 var leftPressed = false;
@@ -27,6 +27,11 @@ var brickOffsetLeft = 30;
 
 //Counting the Score
 var score = 0;
+
+//Game Sounds
+var WINNING_SOUND = new Audio('sounds/woohoo.wav');
+var SCORE_SOUND = new Audio('sounds/success.wav');
+var GAMEOVER_SOUND = new Audio('sounds/gameover.wav');
 
 //Hold the bricks in a two-dimensional array - think of it as rows and columns
 var bricks = [];
@@ -101,7 +106,10 @@ function draw() {
 			dy = -dy;
 		}
 		else {
+			GAMEOVER_SOUND.play();
 			alert("GAME OVER");
+			x = canvas.width/2;
+			y = canvas.height-30;
 			document.location.reload();
 		}
 	}
@@ -118,6 +126,8 @@ function draw() {
 document.addEventListener("keydown" , keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
+
+
 function keyDownHandler(e) {
 	if(e.keyCode == 39) {
 		rightPressed = true;
@@ -126,7 +136,6 @@ function keyDownHandler(e) {
 		leftPressed = true;
 	}
 }
-
 
 function keyUpHandler(e) {
 	if(e.keyCode == 39) {
@@ -146,6 +155,14 @@ function collisionDetection() {
                     dy = -dy;
                     b.status = 0;
 					score++;
+					SCORE_SOUND.play();
+					if(score == brickRowCount*brickColumnCount) {
+						WINNING_SOUND.play();
+						alert("YOU WIN, CONGRATULATIONS!");
+						var result = str.bold();;
+						document.location.reload();
+					
+					}
                 }
             }
         }
