@@ -102,12 +102,12 @@ function draw() {
 	}
 
 	//Move the paddle left and right
-	if(rightPressed) {
-		paddleX += 5;
+	if(rightPressed && paddleX < canvas.width-paddleWidth) {
+		paddleX += 7;
 	}
-	else if(leftPressed) {
-		paddleX -= 5;
-	}
+		else if(leftPressed && paddleX > 0) {
+			paddleX -= 7;
+		}
 }//end of draw()
 
 document.addEventListener("keydown" , keyDownHandler, false);
