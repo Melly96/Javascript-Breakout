@@ -11,19 +11,22 @@ var dy = -2;
 
 //Define a paddle to hit the ball
 var paddleHeight = 10;
-var paddleWidth = 100;
+var paddleWidth = 120;
 var paddleX = (canvas.width-paddleWidth)/2;
 var rightPressed = false;
 var leftPressed = false;
 
 //Setup some bricks
-var brickRowCount = 3;
-var brickColumnCount = 5;
-var brickWidth = 75;
-var brickHeight = 20;
+var brickRowCount = 10;
+var brickColumnCount = 10;
+var brickWidth = 60;
+var brickHeight = 15;
 var brickPadding = 10;
-var brickOffsetTop = 30;
-var brickOffsetLeft = 30;
+var brickOffsetTop = 40;
+var brickOffsetLeft = 40;
+
+//Add game lives
+var lives = 3;
 
 //Counting the Score
 var score = 0;
@@ -53,7 +56,7 @@ function drawBricks() {
                 bricks[c][r].y = brickY;
                 ctx.beginPath();
                 ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                ctx.fillStyle = "#0095DD";
+                ctx.fillStyle = "#FF0000";
                 ctx.fill();
                 ctx.closePath();
 			}
@@ -86,6 +89,8 @@ function draw() {
 	drawPaddle();
 	//draw the score
 	drawScore();
+	//Draw the lives
+	drawLives();
 	//draw the bricks
 	drawBricks();
 	//collision detection
@@ -95,24 +100,33 @@ function draw() {
 	y += dy;
 	
 	//Bouncing the ball off three walls - if it drops off the bottom - Game Over!
-	if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
-		dx = -dx;
-	}
-	if(y + dy < ballRadius) {
-		dy = -dy;
-	} else if(y + dy > canvas.height-ballRadius) {
-		//Check if the ball is hitting the Paddle
-		if(x > paddleX && x < paddleX + paddleWidth) {
-			dy = -dy;
-		}
-		else {
-			GAMEOVER_SOUND.play();
-			alert("GAME OVER");
-			x = canvas.width/2;
-			y = canvas.height-30;
-			document.location.reload();
-		}
-	}
+    if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
+        dx = -dx;
+    }
+    if(y + dy < ballRadius) {
+        dy = -dy;
+    }
+    else if(y + dy > canvas.height-ballRadius) {
+        if(x > paddleX && x < paddleX + paddleWidth) {
+            dy = -dy;
+        }
+        else {
+            lives--;
+            if(!lives) {
+				GAMEOVER_SOUND.play();
+                alert("GAME OVER");
+                document.location.reload();
+            }
+            else {
+                x = canvas.width/2;
+                y = canvas.height-30;
+                dx = 2;
+                dy = -2;
+                paddleX = (canvas.width-paddleWidth)/2;
+            }
+        }
+    }
+    
 
 	//Move the paddle left and right
 	if(rightPressed && paddleX < canvas.width-paddleWidth) {
@@ -121,11 +135,24 @@ function draw() {
 		else if(leftPressed && paddleX > 0) {
 			paddleX -= 7;
 		}
-}//end of draw()
+		
+		function drawScore() {
+		ctx.font = "16px Arial";
+		ctx.fillStyle = "#0095DD";
+		ctx.fillText("Score: "+score, 8, 20);
+		document.getElementById("gamescore").innerHTML = "Score: " + score;
+	}
+}
+function drawLives() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Lives: "+lives, canvas.width-65, 20);
+}
+//end of draw()
 
 document.addEventListener("keydown" , keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
-
+document.addEventListener("keyup" , keyUpHandler, false);
+document.addEventListener("mousemove" , mouseMoveHandler, false);
 
 
 function keyDownHandler(e) {
@@ -137,6 +164,13 @@ function keyDownHandler(e) {
 	}
 }
 
+function mouseMoveHandler(e) {
+	var relativeX = e.clientX - canvas.offsetLeft;
+	if(relativeX > 0 && relativeX < canvas.width) {
+		paddleX = relativeX - paddleWidth/2;
+	}
+}
+
 function keyUpHandler(e) {
 	if(e.keyCode == 39) {
 		rightPressed = false;
@@ -145,6 +179,8 @@ function keyUpHandler(e) {
 		leftPressed = false;
 	}
 }
+
+
 
 function collisionDetection() {
 	for(c=0; c<brickColumnCount; c++) {
@@ -169,11 +205,5 @@ function collisionDetection() {
     }
 }
 
-function drawScore() {
-		ctx.font = "16px Arial";
-		ctx.fillStyle = "#0095DD";
-		ctx.fillText("Score: "+score, 8, 20);
-		document.getElementById("gamescore").innerHTML = "Score: " + score;
-	}
 
 setInterval(draw, 10);
