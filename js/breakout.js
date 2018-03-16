@@ -32,9 +32,9 @@ var lives = 3;
 var score = 0;
 
 //Game Sounds
-var WINNING_SOUND = new Audio('sounds/woohoo.wav');
-var SCORE_SOUND = new Audio('sounds/success.wav');
-var GAMEOVER_SOUND = new Audio('sounds/gameover.wav');
+var YOUWIN_SOUND = new Audio('sounds/youwin.wav');
+var BOUNCE_SOUND = new Audio('sounds/bounce.wav');
+var YOULOSE_SOUND = new Audio('sounds/youlose.wav');
 
 //Hold the bricks in a two-dimensional array - think of it as rows and columns
 var bricks = [];
@@ -113,8 +113,8 @@ function draw() {
         else {
             lives--;
             if(!lives) {
-				GAMEOVER_SOUND.play();
-                alert("GAME OVER");
+				YOULOSE_SOUND.play();
+                alert("YOU LOSE! :(");
                 document.location.reload();
             }
             else {
@@ -191,9 +191,9 @@ function collisionDetection() {
                     dy = -dy;
                     b.status = 0;
 					score++;
-					SCORE_SOUND.play();
+					BOUNCE_SOUND.play();
 					if(score == brickRowCount*brickColumnCount) {
-						WINNING_SOUND.play();
+						YOUWIN_SOUND.play();
 						alert("YOU WIN, CONGRATULATIONS!");
 						var result = str.bold();;
 						document.location.reload();
