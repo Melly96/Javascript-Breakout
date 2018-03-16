@@ -1,5 +1,6 @@
 //Setup the canvas
 var ballRadius = 10;
+var ballColor = "#D2691E"
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 
@@ -56,7 +57,7 @@ function drawBricks() {
                 bricks[c][r].y = brickY;
                 ctx.beginPath();
                 ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                ctx.fillStyle = "#FF0000";
+                ctx.fillStyle = ballColor;
                 ctx.fill();
                 ctx.closePath();
 			}
@@ -67,7 +68,7 @@ function drawBricks() {
 //Draw the ball
 function drawBall() {
 	ctx.beginPath();
-	ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+	ctx.arc(x, y, ballRadius, 20, Math.PI*2);
 	ctx.fillStyle = "#D2691E";
 	ctx.fill();
 	ctx.closePath();
@@ -76,7 +77,7 @@ function drawBall() {
 function drawPaddle() {
 	ctx.beginPath();
 	ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
-	ctx. fillStyle = "#D2691E";
+	ctx. fillStyle = "#000000";
 	ctx.fill();
 	ctx.closePath();
 }
@@ -102,9 +103,11 @@ function draw() {
 	//Bouncing the ball off three walls - if it drops off the bottom - Game Over!
     if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
         dx = -dx;
+		var ballColor = get_random_color();
     }
     if(y + dy < ballRadius) {
         dy = -dy;
+		var ballColor = get_random_color();
     }
     else if(y + dy > canvas.height-ballRadius) {
         if(x > paddleX && x < paddleX + paddleWidth) {
@@ -130,10 +133,10 @@ function draw() {
 
 	//Move the paddle left and right
 	if(rightPressed && paddleX < canvas.width-paddleWidth) {
-		paddleX += 7;
+		paddleX += 10;
 	}
 		else if(leftPressed && paddleX > 0) {
-			paddleX -= 7;
+			paddleX -= 10;
 		}
 		
 		function drawScore() {
