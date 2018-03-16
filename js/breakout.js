@@ -111,6 +111,7 @@ function draw() {
     }
     else if(y + dy > canvas.height-ballRadius) {
         if(x > paddleX && x < paddleX + paddleWidth) {
+				//this makes ball move faster when it hits paddle// 
 				dy = -dy * 1.1;       
 		}
         else {
@@ -193,9 +194,10 @@ function collisionDetection() {
                 if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
                     dy = -dy;
                     b.status = 0;
-					score++;
+					score = score + 10
 					BOUNCE_SOUND.play();
-					if(score == brickRowCount*brickColumnCount) {
+					//increase score by 10 per brick hit//
+					if(score/10 == brickRowCount*brickColumnCount) {
 						YOUWIN_SOUND.play();
 						alert("YOU WIN, CONGRATULATIONS!");
 						var result = str.bold();;
